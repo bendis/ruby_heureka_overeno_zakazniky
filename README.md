@@ -35,7 +35,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/ruby_heureka_overeno_zakazniky.
+Bug reports and pull requests are welcome on GitHub at https://github.com/bendis/ruby_heureka_overeno_zakazniky.
 
 
 ## License
