@@ -7,7 +7,7 @@ require "ruby_heureka_overeno_zakazniky/version"
 module RubyHeurekaOverenoZakazniky
   
   HOST = 'https://api.heureka.cz/shop-certification/v2/'
-  HEADER = {'Content-Type': 'application/json'}
+  HEADER = {'Content-Type': 'application/json;charset=UTF-8'}
   
   def self.order_log apiKey, email, orderId = nil, productItemIds = [], debug = false
     
@@ -25,13 +25,20 @@ module RubyHeurekaOverenoZakazniky
     
     uri = URI.parse(self::HOST + url_action)
     http = Net::HTTP.new(uri.host, uri.port)
+    http.use_ssl = true
     
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE if Rails.env.development?
     http.set_debug_output($stdout) if debug
     
-    request = Net::HTTP::Post.new(uri.request_uri, self::HEADER)
+    request = Net::HTTP::Post.new(uri.request_uri)
     request.body = body.to_json
+    request["Content-Type"] = 'application/json;charset=UTF-8'
 
-    response = http.request(request)
+    begin
+      response = http.request(request)
+    rescue OpenSSL::SSL::SSLError, Timeout::Error, Errno::EINVAL, Errno::ECONNRESET, EOFError, Net::HTTPBadResponse, Net::HTTPHeaderSyntaxError, Net::ProtocolError => e
+      puts "HEUREKA ERROR: #{e.inspect}"
+    end
     
   end
 end
